@@ -1,0 +1,32 @@
+# coding: utf-8
+
+# flake8: noqa
+from __future__ import absolute_import
+# import models into model package
+from swagger_server.models.get_mec_platforms_response import GetMECPlatformsResponse
+from swagger_server.models.get_resources_response import GetResourcesResponse
+from swagger_server.models.links_all_mec_platforms import LinksAllMecPlatforms
+from swagger_server.models.links_allmecplatforms_link import LinksAllmecplatformsLink
+from swagger_server.models.links_bookmark import LinksBookmark
+from swagger_server.models.links_bookmark_link import LinksBookmarkLink
+from swagger_server.models.links_common import LinksCommon
+from swagger_server.models.links_self import LinksSelf
+from swagger_server.models.links_self_link import LinksSelfLink
+from swagger_server.models.links_terms_of_service import LinksTermsOfService
+from swagger_server.models.links_terms_of_service_link import LinksTermsOfServiceLink
+from swagger_server.models.links_version_history import LinksVersionHistory
+from swagger_server.models.links_version_history_link import LinksVersionHistoryLink
+from swagger_server.models.one_of_get_mec_platforms_response_links_items import OneOfGetMECPlatformsResponseLinksItems
+from swagger_server.models.one_ofget_resources_response_links_items import OneOfgetResourcesResponseLinksItems
+from swagger_server.models.one_oflinks_common_items import OneOflinksCommonItems
+from swagger_server.models.one_ofresources_items import OneOfresourcesItems
+from swagger_server.models.resources import Resources
+from swagger_server.models.resources_mecplatform import ResourcesMecplatform
+from swagger_server.models.resources_mecplatform_properties import ResourcesMecplatformProperties
+from swagger_server.models.types_edge_resource import TypesEdgeResource
+from swagger_server.models.types_error import TypesError
+from swagger_server.models.types_region_id import TypesRegionId
+from swagger_server.models.types_success import TypesSuccess
+from swagger_server.models.types_ue_identity import TypesUEIdentity
+from swagger_server.models.types_ue_identity_type import TypesUEIdentityType
+from swagger_server.models.types_zone_id import TypesZoneId

@@ -1,0 +1,527 @@
+openapi: 3.0.0
+info:
+  title: Simple MEC Discovery API
+  description: |
+    # Find your nearest MEC platform
+    ---
+    Network operators will typically have multiple MEC sites in a given territory. Connecting your application to a server on the closest MEC platform means the lowest latency - however, the physical location of a user is not an accurate match to the closest MEC site, due to the way operator networks are configured. This API returns the MEC platforms with the _shortest network path_ to the client making the request, and hence the lowest propagation delay.
+    * If you have a server instance deployed there, connect to it to gain the lowest latency
+    * Or if not, you may wish to deploy an instance there using the APIs of the cloud provider supporting that zone.
+
+      This API is intended to be called by a client application hosted on a UE attached to the operator network. _Note that the API parameters have been listed in this 'simple API' to align with the full API, but are optional and may not be supported by the API server_
+    ---
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.8.0
+servers:
+- url: https://virtserver.swaggerhub.com/alphatest/SimpleAPI/1.1.2
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: Discovery
+  description: |
+    Find the closest MEC platform to the UE (user equipment)
+paths:
+  /:
+    get:
+      tags:
+      - Discovery
+      summary: API bookmark
+      description: API bookmark
+      operationId: bookmark
+      responses:
+        "200":
+          description: Bookmark
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getResourcesResponse'
+        "401":
+          description: HTTP 401 Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/types_error'
+        default:
+          description: HTTP 500 Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/typesError'
+      x-openapi-router-controller: swagger_server.controllers.discovery_controller
+  /mecplatforms:
+    get:
+      tags:
+      - Discovery
+      summary: Returns the name of the closest MEC platform(s) to the UE that sent
+        the request.
+      description: "ON receiving this request, the network will calculate which of\
+        \ its MEC platforms have the shortest network path to the UE (terminal) from\
+        \ which the request was made."
+      operationId: get_mecplatforms
+      parameters:
+      - name: region
+        in: query
+        description: MEC region ID
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: zone
+        in: query
+        description: MEC zone ID
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: serviceProfileId
+        in: query
+        description: service profile identifier
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: subscriberDensity
+        in: query
+        description: Minimum number of 4G/5G subscribers per square kilometer.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: UEIdentityType
+        in: query
+        description: Type of User Equipment identifier used in `UEIdentity`.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/types_UEIdentityType'
+      - name: UEIdentity
+        in: query
+        description: Identifier value for User Equipment. The type of identifier is
+          defined by the UEIdentityType parameter.
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/types_UEIdentity'
+      responses:
+        "200":
+          description: MEC platforms matching query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMECPlatformsResponse'
+        "401":
+          description: HTTP 401 Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/types_error'
+        default:
+          description: HTTP 500 Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/typesError'
+      x-openapi-router-controller: swagger_server.controllers.discovery_controller
+components:
+  schemas:
+    resources:
+      type: array
+      additionalProperties: false
+      items:
+        oneOf:
+        - $ref: '#/components/schemas/links_All-mec-platforms'
+    resources_mecplatform:
+      type: object
+      properties:
+        ern:
+          $ref: '#/components/schemas/types_edgeResource'
+        zone:
+          $ref: '#/components/schemas/types_zone_Id'
+        region:
+          $ref: '#/components/schemas/types_region_Id'
+        status:
+          type: string
+          description: Status of the MEC Platform (default is 'unknown')
+          default: unknown
+          enum:
+          - active
+          - inactive
+          - unknown
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/resources_mecplatform_properties'
+      additionalProperties: false
+      example:
+        ern: {}
+        zone: {}
+        region: {}
+        properties:
+        - data: {}
+          type: type
+        - data: {}
+          type: type
+        status: unknown
+    types_edgeResource:
+      type: object
+      additionalProperties: false
+      description: |
+        An object defined by the service provider representing an edge resource within its network domain, such as a MEC Platform.  The string contains colon-separated metadata in the form   ern:<tsp-identifier>:<tsp-region>:<resource-type>:<resource-identifier>:<tsp-extensions>
+    types_zone_Id:
+      type: object
+      additionalProperties: false
+      description: |
+        Unique identifier representing a zone
+    types_region_Id:
+      type: object
+      additionalProperties: false
+      description: |
+        Unique identifier representing a region
+    typesError:
+      required:
+      - code
+      - links
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        links:
+          $ref: '#/components/schemas/linksCommon'
+      additionalProperties: false
+    types_success:
+      required:
+      - code
+      - links
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        links:
+          $ref: '#/components/schemas/linksCommon'
+      additionalProperties: false
+    types_error:
+      required:
+      - code
+      - links
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        links:
+          $ref: '#/components/schemas/linksCommon'
+      additionalProperties: false
+    types_UEIdentityType:
+      type: string
+      description: Type of User Equipment identifier used in `UEIdentity`.
+      enum:
+      - IPAddress
+      - MSISDN
+      - IMEI
+      - MDN
+      - GPSI
+    types_UEIdentity:
+      type: string
+      description: Identifier value for User Equipment. The type of identifier is
+        defined by the 'UEIdentityType' parameter.
+    links_All-mec-platforms:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/links_Allmecplatforms_link'
+      additionalProperties: false
+      readOnly: true
+    linksSelf:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/linksSelf_link'
+      additionalProperties: false
+      readOnly: true
+    linksVersionHistory:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/linksVersionHistory_link'
+      additionalProperties: false
+      readOnly: true
+    linksTermsOfService:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/linksTermsOfService_link'
+      additionalProperties: false
+      readOnly: true
+    linksBookmark:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/linksBookmark_link'
+      additionalProperties: false
+      readOnly: true
+    linksCommon:
+      type: array
+      readOnly: true
+      items:
+        oneOf:
+        - $ref: '#/components/schemas/linksSelf'
+        - $ref: '#/components/schemas/linksVersionHistory'
+        - $ref: '#/components/schemas/linksTermsOfService'
+        - $ref: '#/components/schemas/linksBookmark'
+    getResourcesResponse:
+      title: getResourcesResponse
+      type: object
+      properties:
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/resources'
+        links:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/linksCommon'
+      example:
+        resources:
+        - - ""
+          - ""
+        - - ""
+          - ""
+        links:
+        - ""
+        - ""
+    GetMECPlatformsResponse:
+      title: GetMECPlatformsResponse
+      type: object
+      properties:
+        MECPlatforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/resources_mecplatform'
+        links:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/links_All-mec-platforms'
+            - $ref: '#/components/schemas/linksCommon'
+      example:
+        MECPlatforms:
+        - ern: {}
+          zone: {}
+          region: {}
+          properties:
+          - data: {}
+            type: type
+          - data: {}
+            type: type
+          status: unknown
+        - ern: {}
+          zone: {}
+          region: {}
+          properties:
+          - data: {}
+            type: type
+          - data: {}
+            type: type
+          status: unknown
+        links:
+        - ""
+        - ""
+    resources_mecplatform_properties:
+      type: object
+      properties:
+        type:
+          type: string
+        data:
+          type: object
+      example:
+        data: {}
+        type: type
+    links_Allmecplatforms_link:
+      required:
+      - href
+      - method
+      - rel
+      type: object
+      properties:
+        rel:
+          pattern: ListMECPlatforms
+          type: string
+          example: ListMECPlatforms
+        method:
+          pattern: get
+          type: string
+          example: get
+        href:
+          pattern: \/mecplatforms
+          type: string
+          example: /mecplatforms
+    linksSelf_link:
+      required:
+      - href
+      - method
+      - rel
+      type: object
+      properties:
+        rel:
+          pattern: self
+          type: string
+          example: self
+        method:
+          pattern: get
+          type: string
+          example: get
+        href:
+          type: string
+          format: uri
+    linksVersionHistory_link:
+      required:
+      - href
+      - method
+      - rel
+      type: object
+      properties:
+        rel:
+          pattern: version-history
+          type: string
+          example: version-history
+        method:
+          pattern: get
+          type: string
+          example: get
+        href:
+          type: string
+          format: uri
+    linksTermsOfService_link:
+      required:
+      - href
+      - method
+      - rel
+      type: object
+      properties:
+        rel:
+          pattern: terms-of-service
+          type: string
+          example: terms-of-service
+        method:
+          pattern: get
+          type: string
+          example: get
+        href:
+          type: string
+          format: uri
+    linksBookmark_link:
+      required:
+      - href
+      - method
+      - rel
+      type: object
+      properties:
+        rel:
+          pattern: bookmark
+          type: string
+          example: bookmark
+        method:
+          pattern: get
+          type: string
+          example: get
+        href:
+          type: string
+          format: uri
+  responses:
+    OK:
+      description: HTTP 200 OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/types_success'
+    Unauthorized:
+      description: HTTP 401 Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/types_error'
+    NotFound:
+      description: HTTP 404 The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/types_error'
+    Unexpected:
+      description: HTTP 500 Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/typesError'
+  parameters:
+    region:
+      name: region
+      in: query
+      description: MEC region ID
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    zone:
+      name: zone
+      in: query
+      description: MEC zone ID
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    serviceProfileId:
+      name: serviceProfileId
+      in: query
+      description: service profile identifier
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    subscriberDensity:
+      name: subscriberDensity
+      in: query
+      description: Minimum number of 4G/5G subscribers per square kilometer.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+    UEIdentityType:
+      name: UEIdentityType
+      in: query
+      description: Type of User Equipment identifier used in `UEIdentity`.
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/types_UEIdentityType'
+    UEIdentity:
+      name: UEIdentity
+      in: query
+      description: Identifier value for User Equipment. The type of identifier is
+        defined by the UEIdentityType parameter.
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/types_UEIdentity'
+
