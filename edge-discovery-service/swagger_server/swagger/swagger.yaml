@@ -91,7 +91,7 @@ servers:
       default: "3333"
       enum:
       - "3333"
-- url: "https://edge.example.com:{port}/v1"
+- url: "http://13.229.103.232:8081/v1"
   description: Production API
   variables:
     port:
@@ -99,7 +99,7 @@ servers:
       enum:
       - "443"
       - "8443"
-- url: "https://{region}.edge.example.com:{port}/v1"
+- url: "http://13.229.103.232:8081/v1"
   description: Production API for Regions
   variables:
     region:
@@ -109,13 +109,13 @@ servers:
       enum:
       - "443"
       - "8443"
-security:
-- oAuth2:
-  - edge:discovery:read
-  - edge:serviceprofile:read
-  - edge:serviceprofile:write
-  - edge:serviceregistry:read
-  - edge:serviceregistry:write
+# security:
+# - oAuth2:
+#   - edge:discovery:read
+#   - edge:serviceprofile:read
+#   - edge:serviceprofile:write
+#   - edge:serviceregistry:read
+#   - edge:serviceregistry:write
 tags:
 - name: Discovery
   description: |
@@ -2221,36 +2221,36 @@ components:
       explode: true
       schema:
         type: string
-  securitySchemes:
-    oAuth2:
-      type: oauth2
-      description: "This API uses OAuth 2 with the implicit, password and client credentials\
-        \ grant flow"
-      flows:
-        implicit:
-          authorizationUrl: https://example.com/oauth/authorize
-          scopes:
-            discovery:read: Grant read-only access to discovery data
-            serviceprofile:read: Grant read-only access to service profile data
-            serviceprofile:write: Grant write access to service profile data
-            serviceregistry:read: Grant read-only access to service registry data
-            serviceregistry:write: Grant write access to service registry data
-        password:
-          tokenUrl: https://example.com/oauth/token
-          scopes:
-            discovery:read: Grant read-only access to discovery data
-            serviceprofile:read: Grant read-only access to service profile data
-            serviceprofile:write: Grant write access to service profile data
-            serviceregistry:read: Grant read-only access to Service registry data
-            serviceregistry:write: Grant write access to Service registry data
-        clientCredentials:
-          tokenUrl: https://example.com/oauth/token
-          scopes:
-            discovery:read: Grant read-only access to discovery data
-            serviceprofile:read: Grant read-only access to service profile data
-            serviceprofile:write: Grant write access to service profile data
-            serviceregistry:read: Grant read-only access to Service registry data
-            serviceregistry:write: Grant write access to Service registry data
-      x-tokenInfoFunc: swagger_server.controllers.authorization_controller.check_oAuth2
-      x-scopeValidateFunc: swagger_server.controllers.authorization_controller.validate_scope_oAuth2
+  # securitySchemes:
+  #   oAuth2:
+  #     type: oauth2
+  #     description: "This API uses OAuth 2 with the implicit, password and client credentials\
+  #       \ grant flow"
+  #     flows:
+  #       implicit:
+  #         authorizationUrl: https://example.com/oauth/authorize
+  #         scopes:
+  #           discovery:read: Grant read-only access to discovery data
+  #           serviceprofile:read: Grant read-only access to service profile data
+  #           serviceprofile:write: Grant write access to service profile data
+  #           serviceregistry:read: Grant read-only access to service registry data
+  #           serviceregistry:write: Grant write access to service registry data
+  #       password:
+  #         tokenUrl: https://example.com/oauth/token
+  #         scopes:
+  #           discovery:read: Grant read-only access to discovery data
+  #           serviceprofile:read: Grant read-only access to service profile data
+  #           serviceprofile:write: Grant write access to service profile data
+  #           serviceregistry:read: Grant read-only access to Service registry data
+  #           serviceregistry:write: Grant write access to Service registry data
+  #       clientCredentials:
+  #         tokenUrl: https://example.com/oauth/token
+  #         scopes:
+  #           discovery:read: Grant read-only access to discovery data
+  #           serviceprofile:read: Grant read-only access to service profile data
+  #           serviceprofile:write: Grant write access to service profile data
+  #           serviceregistry:read: Grant read-only access to Service registry data
+  #           serviceregistry:write: Grant write access to Service registry data
+  #     x-tokenInfoFunc: swagger_server.controllers.authorization_controller.check_oAuth2
+  #     x-scopeValidateFunc: swagger_server.controllers.authorization_controller.validate_scope_oAuth2
 

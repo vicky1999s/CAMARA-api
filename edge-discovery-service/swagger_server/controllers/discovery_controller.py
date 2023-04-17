@@ -1,5 +1,6 @@
 import connexion
 import six
+import subprocess
 
 from swagger_server.models.get_mec_platforms_response import GetMECPlatformsResponse  # noqa: E501
 from swagger_server.models.get_regions_response import GetRegionsResponse  # noqa: E501
@@ -16,6 +17,7 @@ from swagger_server.models.types_ue_identity_type import TypesUEIdentityType  # 
 from swagger_server.models.types_zone_id import TypesZoneId  # noqa: E501
 from swagger_server import util
 
+server_ips = ["18.139.162.71", "8.8.8.8"]
 
 def bookmark():  # noqa: E501
     """List the links to the top-level resources of this API
@@ -52,7 +54,30 @@ def get_mecplatforms(region=None, zone=None, service_profile_id=None, subscriber
         ue_identity_type = TypesUEIdentityType.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
         ue_identity = TypesUEIdentity.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+
+    shortest_server = None
+    shortest_ping = float('inf')
+
+    # Iterate through each MEC server
+    for server in server_ips:
+        print(server)
+        # Ping the server and capture the output
+        try:
+            output = subprocess.check_output(['ping', '-c', '1', server], stderr=subprocess.STDOUT, timeout=1)
+            # Extract the ping time from the output
+            ping_time = float(output.decode().split('time=')[1].split(' ms')[0])
+            print(server, ping_time)
+            # Update the shortest server if necessary
+            if ping_time < shortest_ping:
+                shortest_server = server
+                shortest_ping = ping_time
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            # Ignore any errors that occur during ping
+            pass
+
+    return shortest_server
+        
 
 
 def get_region(region_id):  # noqa: E501
