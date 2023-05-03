@@ -19,7 +19,7 @@ def deregister_service_endpoint(service_endpoints_id):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        service_endpoints_id = TypesServiceEndpointsId.from_dict(connexion.request.get_json())  # noqa: E501
+        service_endpoints_id = TypesServiceEndpointsId.from_dict(connexion.request.get_json())  # noqa: E501\
     return 'do some magic!'
 
 
@@ -50,6 +50,8 @@ def register_service_endpoints(body=None):  # noqa: E501
     """
     if connexion.request.is_json:
         body = [ResourcesEdgeHostedService.from_dict(d) for d in connexion.request.get_json()]  # noqa: E501
+    body = connexion.request.get_json()
+    print(body)
     return 'do some magic!'
 
 

@@ -109,13 +109,13 @@ servers:
       enum:
       - "443"
       - "8443"
-security:
-- oAuth2:
-  - edge:discovery:read
-  - edge:serviceprofile:read
-  - edge:serviceprofile:write
-  - edge:serviceregistry:read
-  - edge:serviceregistry:write
+# security:
+# - oAuth2:
+#   - edge:discovery:read
+#   - edge:serviceprofile:read
+#   - edge:serviceprofile:write
+#   - edge:serviceregistry:read
+#   - edge:serviceregistry:write
 tags:
 - name: Discovery
   description: |
@@ -954,9 +954,9 @@ components:
         serviceEndpoint:
           FQDN: FQDN
           port: 0
-          IPv6Address: IPv6Address
+          IPv6Address: 2001:4860:4860::8888
           URI: http://example.com/aeiou
-          IPv4Address: IPv4Address
+          IPv4Address: 13.229.103.232
         applicationId: applicationId
     resources_service_endpoint:
       type: object
