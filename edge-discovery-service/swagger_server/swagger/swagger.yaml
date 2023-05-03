@@ -943,20 +943,22 @@ components:
           additionalProperties: false
           description: Description of the Service Endpoint
         serviceProfileID:
-          $ref: '#/components/schemas/types_service_profile_Id'
+          type: string
+          description: service profile id
+          #$ref: '#/components/schemas/types_service_profile_Id'
       description: Edge hosted service represented by Service Endpoint definition
       example:
         ern: {}
         serviceEndpointsId: {}
         applicationServerProviderId: applicationServerProviderId
-        serviceProfileID: {}
+        serviceProfileID: ""
         serviceDescription: {}
         serviceEndpoint:
           FQDN: FQDN
           port: 0
-          IPv6Address: IPv6Address
+          IPv6Address: 2001:4860:4860::8888
           URI: http://example.com/aeiou
-          IPv4Address: IPv4Address
+          IPv4Address: 13.229.103.232
         applicationId: applicationId
     resources_service_endpoint:
       type: object
@@ -1101,7 +1103,7 @@ components:
         A system-defined string identifier representing one or more registered Service Endpoints.
       readOnly: true
     types_service_profile_Id:
-      type: object
+      type: string
       additionalProperties: false
       description: |
         Unique identifier for a service profile

@@ -75,7 +75,6 @@ def get_mecplatforms(region=None, zone=None, service_profile_id=None, subscriber
         except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
             # Ignore any errors that occur during ping
             pass
-
     return shortest_server
         
 
